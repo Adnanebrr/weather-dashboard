@@ -11,9 +11,6 @@ A beautiful, responsive weather dashboard built with React and Tailwind CSS that
 - **Responsive Design** - Optimized for desktop, tablet, and mobile devices
 - **Modern UI** - Glass-morphism design with smooth animations
 
-## 🚀 Live Demo
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=YOUR_REPO_URL)
 
 ## 🛠️ Technologies Used
 
@@ -22,9 +19,3 @@ A beautiful, responsive weather dashboard built with React and Tailwind CSS that
 - **OpenWeatherMap API** - Weather data source
 - **Vite** - Build tool and development server
 
-## 📦 Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/weather-dashboard.git
-   cd weather-dashboard
