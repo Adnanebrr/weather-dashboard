@@ -1,10 +1,6 @@
 import React from 'react';
 
-<<<<<<< HEAD
 function Forecast({ forecast, unit, theme }) {
-=======
-function Forecast({ forecast, unit }) {
->>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   if (!forecast || forecast.length === 0) {
     const containerClass = theme === 'dark'
       ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-gray-700/50"
@@ -24,7 +20,6 @@ function Forecast({ forecast, unit }) {
 
   const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
 
-<<<<<<< HEAD
   const containerClass = theme === 'dark'
     ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-gray-700/50"
     : "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20";
@@ -37,8 +32,6 @@ function Forecast({ forecast, unit }) {
   const secondaryTextColor = theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
   const tempColor = theme === 'dark' ? 'text-white' : 'text-gray-800';
 
-=======
->>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   // Get day names for the next 5 days
   const getDayName = (offset) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -76,15 +69,9 @@ function Forecast({ forecast, unit }) {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-<<<<<<< HEAD
               <span className={`text-lg font-bold ${tempColor}`}>{day.maxTemp}{unitSymbol}</span>
               <span className={`text-lg ${secondaryTextColor}`}>/</span>
               <span className={`text-lg ${secondaryTextColor}`}>{day.minTemp}{unitSymbol}</span>
-=======
-              <span className="text-lg font-bold text-gray-800">{day.maxTemp}{unitSymbol}</span>
-              <span className="text-lg text-gray-400">/</span>
-              <span className="text-lg text-gray-500">{day.minTemp}{unitSymbol}</span>
->>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
             </div>
           </div>
         ))}

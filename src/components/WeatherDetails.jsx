@@ -1,10 +1,6 @@
 import React from 'react';
 
-<<<<<<< HEAD
 function WeatherDetails({ weather, unit, theme }) {
-=======
-function WeatherDetails({ weather, unit }) {
->>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   if (!weather) {
     const containerClass = theme === 'dark'
       ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-gray-700/50"
@@ -24,7 +20,6 @@ function WeatherDetails({ weather, unit }) {
 
   const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
 
-<<<<<<< HEAD
   const containerClass = theme === 'dark'
     ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-gray-700/50"
     : "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-white/20";
@@ -34,9 +29,6 @@ function WeatherDetails({ weather, unit }) {
   const labelColor = theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
 
   // Mock data for additional details
-=======
-  // Mock data for additional details (in a real app, these would come from the API)
->>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   const additionalDetails = {
     airQuality: 'Good',
     pollen: 'Low',
@@ -46,23 +38,6 @@ function WeatherDetails({ weather, unit }) {
     sunset: '7:30 PM',
     feelsLike: `${weather.feelsLike || weather.temperature}${unitSymbol}`
   };
-
-  // Color mapping for dark mode
-  const getColorClass = (baseColor, type) => {
-    if (theme === 'dark') {
-      return type === 'bg' ? `bg-${baseColor}-900/30` : `text-${baseColor}-300`;
-    } else {
-      return type === 'bg' ? `bg-${baseColor}-100` : `text-${baseColor}-600`;
-    }
-  };
-
-  const detailCardClass = (baseColor) => theme === 'dark'
-    ? `text-center p-4 bg-${baseColor}-900/30 rounded-xl shadow-sm border border-${baseColor}-800/50`
-    : `text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100`;
-
-  const iconBgClass = (baseColor) => theme === 'dark'
-    ? `bg-${baseColor}-800/50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3`
-    : `bg-${baseColor}-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3`;
 
   return (
     <div className={containerClass}>
@@ -80,12 +55,20 @@ function WeatherDetails({ weather, unit }) {
           { label: 'Sunset', value: additionalDetails.sunset, icon: '🌇', color: 'purple' },
           { label: 'Feels Like', value: additionalDetails.feelsLike, icon: '🌡️', color: 'gray' }
         ].map((detail, index) => (
-          <div key={index} className={detailCardClass(detail.color)}>
-            <div className={iconBgClass(detail.color)}>
+          <div key={index} className={`text-center p-4 rounded-xl shadow-sm border ${
+            theme === 'dark' 
+              ? `bg-${detail.color}-900/30 border-${detail.color}-800/50` 
+              : 'bg-white border-gray-100'
+          }`}>
+            <div className={`rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3 ${
+              theme === 'dark' ? `bg-${detail.color}-800/50` : `bg-${detail.color}-100`
+            }`}>
               <span className="text-2xl">{detail.icon}</span>
             </div>
             <p className={`text-sm font-medium mb-1 ${labelColor}`}>{detail.label}</p>
-            <p className={`text-lg font-semibold ${getColorClass(detail.color, 'text')}`}>
+            <p className={`text-lg font-semibold ${
+              theme === 'dark' ? `text-${detail.color}-300` : `text-${detail.color}-600`
+            }`}>
               {detail.value}
             </p>
           </div>
@@ -97,7 +80,7 @@ function WeatherDetails({ weather, unit }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="text-center sm:text-left">
             <p className={`text-sm font-medium ${labelColor}`}>🌼 Pollen Level</p>
-            <p className={`text-lg font-semibold ${getColorClass('green', 'text')}`}>
+            <p className={`text-lg font-semibold ${theme === 'dark' ? 'text-green-300' : 'text-green-600'}`}>
               {additionalDetails.pollen}
             </p>
           </div>
