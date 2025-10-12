@@ -1,6 +1,10 @@
 import React from 'react';
 
+<<<<<<< HEAD
 function CurrentWeather({ weather, unit, theme }) {
+=======
+function CurrentWeather({ weather, unit }) {
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   if (!weather) {
     const containerClass = theme === 'dark'
       ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center border border-gray-700/50"
@@ -18,6 +22,7 @@ function CurrentWeather({ weather, unit, theme }) {
 
   const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
 
+<<<<<<< HEAD
   const containerClass = theme === 'dark'
     ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 mb-6 border border-gray-700/50"
     : "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 mb-6 border border-white/20";
@@ -35,16 +40,26 @@ function CurrentWeather({ weather, unit, theme }) {
     ? `text-xl md:text-2xl font-semibold text-${baseColor}-300`
     : `text-xl md:text-2xl font-semibold text-${baseColor}-600`;
 
+=======
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   return (
     <div className={containerClass}>
       {/* Main Weather Info */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-6 md:mb-8">
         <div className="text-center md:text-left mb-4 md:mb-0 flex-1">
+<<<<<<< HEAD
           <h2 className={`text-2xl md:text-3xl font-bold mb-2 ${textColor}`}>{weather.city}</h2>
           <p className={`text-5xl md:text-6xl font-bold mb-2 ${textColor}`}>
             {weather.temperature}{unitSymbol}
           </p>
           <p className={`text-lg md:text-xl capitalize ${secondaryTextColor}`}>{weather.description}</p>
+=======
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{weather.city}</h2>
+          <p className="text-5xl md:text-6xl font-bold text-gray-800 mb-2">
+            {weather.temperature}{unitSymbol}
+          </p>
+          <p className="text-lg md:text-xl text-gray-600 capitalize">{weather.description}</p>
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
         </div>
         <div className="text-center">
           <img 
@@ -61,9 +76,15 @@ function CurrentWeather({ weather, unit, theme }) {
           <p className={`text-sm mb-1 ${secondaryTextColor}`}>💧 Humidity</p>
           <p className={detailValueClass('blue')}>{weather.humidity}%</p>
         </div>
+<<<<<<< HEAD
         <div className={detailCardClass('green')}>
           <p className={`text-sm mb-1 ${secondaryTextColor}`}>💨 Wind</p>
           <p className={detailValueClass('green')}>{weather.wind} {unit === 'fahrenheit' ? 'mph' : 'km/h'}</p>
+=======
+        <div className="text-center p-3 bg-green-50 rounded-xl">
+          <p className="text-gray-500 text-sm mb-1">💨 Wind</p>
+          <p className="text-xl md:text-2xl font-semibold text-green-600">{weather.wind} {unit === 'fahrenheit' ? 'mph' : 'km/h'}</p>
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
         </div>
         <div className={`${detailCardClass('purple')} col-span-2 md:col-span-1`}>
           <p className={`text-sm mb-1 ${secondaryTextColor}`}>📊 Pressure</p>

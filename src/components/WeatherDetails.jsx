@@ -1,6 +1,10 @@
 import React from 'react';
 
+<<<<<<< HEAD
 function WeatherDetails({ weather, unit, theme }) {
+=======
+function WeatherDetails({ weather, unit }) {
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   if (!weather) {
     const containerClass = theme === 'dark'
       ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-gray-700/50"
@@ -20,6 +24,7 @@ function WeatherDetails({ weather, unit, theme }) {
 
   const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
 
+<<<<<<< HEAD
   const containerClass = theme === 'dark'
     ? "bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-gray-700/50"
     : "bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-white/20";
@@ -29,6 +34,9 @@ function WeatherDetails({ weather, unit, theme }) {
   const labelColor = theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
 
   // Mock data for additional details
+=======
+  // Mock data for additional details (in a real app, these would come from the API)
+>>>>>>> 487cd561df4188208ed31cdea52eb52cc7dd1261
   const additionalDetails = {
     airQuality: 'Good',
     pollen: 'Low',
