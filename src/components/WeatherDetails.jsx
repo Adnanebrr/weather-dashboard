@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WeatherDetails({ weather }) {
+function WeatherDetails({ weather, unit }) {
   if (!weather) {
     return (
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-white/20">
@@ -10,15 +10,17 @@ function WeatherDetails({ weather }) {
     );
   }
 
-  // Mock data for additional details
+  const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
+
+  // Mock data for additional details (in a real app, these would come from the API)
   const additionalDetails = {
     airQuality: 'Good',
     pollen: 'Low',
     uvIndex: 'Moderate (5)',
-    visibility: '16 km',
+    visibility: unit === 'fahrenheit' ? '10 mi' : '16 km',
     sunrise: '6:45 AM',
     sunset: '7:30 PM',
-    feelsLike: `${weather.temperature}°C`
+    feelsLike: `${weather.feelsLike || weather.temperature}${unitSymbol}`
   };
 
   return (

@@ -13,23 +13,30 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [userLocation, setUserLocation] = useState(null);
+  const [unit, setUnit] = useState('celsius'); // 'celsius' or 'fahrenheit'
 
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
   const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
   const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
-  // Load favorites from localStorage on component mount
+  // Load favorites and unit preference from localStorage on component mount
   useEffect(() => {
     const savedFavorites = localStorage.getItem('weatherFavorites');
+    const savedUnit = localStorage.getItem('weatherUnit');
+    
     if (savedFavorites) {
       setFavorites(JSON.parse(savedFavorites));
     }
+    if (savedUnit) {
+      setUnit(savedUnit);
+    }
   }, []);
 
-  // Save favorites to localStorage whenever favorites change
+  // Save favorites and unit preference to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('weatherFavorites', JSON.stringify(favorites));
-  }, [favorites]);
+    localStorage.setItem('weatherUnit', unit);
+  }, [favorites, unit]);
 
   // Get user's current location on component mount
   useEffect(() => {
@@ -82,14 +89,28 @@ function App() {
     }
   };
 
+  const toggleUnit = () => {
+    setUnit(prev => prev === 'celsius' ? 'fahrenheit' : 'celsius');
+  };
+
+  // Convert temperature based on current unit
+  const convertTemp = (tempCelsius) => {
+    if (unit === 'fahrenheit') {
+      return Math.round((tempCelsius * 9/5) + 32);
+    }
+    return tempCelsius;
+  };
+
   const fetchWeatherByCoords = async (lat, lon) => {
     setLoading(true);
     setError('');
     
     try {
+      const unitsParam = unit === 'fahrenheit' ? 'imperial' : 'metric';
+      
       // Fetch current weather by coordinates
       const currentResponse = await fetch(
-        `${CURRENT_WEATHER_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+        `${CURRENT_WEATHER_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unitsParam}`
       );
       
       if (!currentResponse.ok) {
@@ -100,7 +121,7 @@ function App() {
       
       // Fetch 5-day forecast by coordinates
       const forecastResponse = await fetch(
-        `${FORECAST_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+        `${FORECAST_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unitsParam}`
       );
       
       const forecastData = await forecastResponse.json();
@@ -113,7 +134,8 @@ function App() {
         icon: currentData.weather[0].icon,
         humidity: currentData.main.humidity,
         wind: Math.round(currentData.wind.speed),
-        pressure: currentData.main.pressure
+        pressure: currentData.main.pressure,
+        feelsLike: Math.round(currentData.main.feels_like)
       };
       
       // Process forecast data - get one reading per day
@@ -146,9 +168,11 @@ function App() {
     setError('');
     
     try {
+      const unitsParam = unit === 'fahrenheit' ? 'imperial' : 'metric';
+      
       // Fetch current weather
       const currentResponse = await fetch(
-        `${CURRENT_WEATHER_URL}?q=${city}&appid=${API_KEY}&units=metric`
+        `${CURRENT_WEATHER_URL}?q=${city}&appid=${API_KEY}&units=${unitsParam}`
       );
       
       if (!currentResponse.ok) {
@@ -159,7 +183,7 @@ function App() {
       
       // Fetch 5-day forecast
       const forecastResponse = await fetch(
-        `${FORECAST_URL}?q=${city}&appid=${API_KEY}&units=metric`
+        `${FORECAST_URL}?q=${city}&appid=${API_KEY}&units=${unitsParam}`
       );
       
       const forecastData = await forecastResponse.json();
@@ -172,7 +196,8 @@ function App() {
         icon: currentData.weather[0].icon,
         humidity: currentData.main.humidity,
         wind: Math.round(currentData.wind.speed),
-        pressure: currentData.main.pressure
+        pressure: currentData.main.pressure,
+        feelsLike: Math.round(currentData.main.feels_like)
       };
       
       // Process forecast data - get one reading per day
@@ -203,10 +228,40 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-4xl font-bold text-gray-800 text-center mb-2">
-          🌤️ Weather Dashboard
-        </h1>
-        <p className="text-gray-600 text-center mb-8">Get accurate weather forecasts for any city</p>
+        {/* Header with Unit Toggle */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
+          <div className="text-center sm:text-left mb-4 sm:mb-0">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              🌤️ Weather Dashboard
+            </h1>
+            <p className="text-gray-600">Get accurate weather forecasts for any city</p>
+          </div>
+          
+          {/* Unit Toggle Button */}
+          <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-xl p-2 shadow-sm border border-white/20">
+            <span className="text-sm font-medium text-gray-600 px-2">Units:</span>
+            <button
+              onClick={toggleUnit}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                unit === 'celsius'
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              °C
+            </button>
+            <button
+              onClick={toggleUnit}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                unit === 'fahrenheit'
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              °F
+            </button>
+          </div>
+        </div>
         
         <SearchBar 
           onSearch={handleSearch} 
@@ -255,9 +310,9 @@ function App() {
           onRemoveFavorite={handleRemoveFavorite}
         />
         
-        <CurrentWeather weather={weather} />
-        <Forecast forecast={forecast} />
-        <WeatherDetails weather={weather} />
+        <CurrentWeather weather={weather} unit={unit} />
+        <Forecast forecast={forecast} unit={unit} />
+        <WeatherDetails weather={weather} unit={unit} />
       </div>
     </div>
   );

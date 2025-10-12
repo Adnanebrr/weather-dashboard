@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Forecast({ forecast }) {
+function Forecast({ forecast, unit }) {
   if (!forecast || forecast.length === 0) {
     return (
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20">
@@ -9,6 +9,8 @@ function Forecast({ forecast }) {
       </div>
     );
   }
+
+  const unitSymbol = unit === 'fahrenheit' ? '°F' : '°C';
 
   // Get day names for the next 5 days
   const getDayName = (offset) => {
@@ -45,9 +47,9 @@ function Forecast({ forecast }) {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <span className="text-lg font-bold text-gray-800">{day.maxTemp}°</span>
+              <span className="text-lg font-bold text-gray-800">{day.maxTemp}{unitSymbol}</span>
               <span className="text-lg text-gray-400">/</span>
-              <span className="text-lg text-gray-500">{day.minTemp}°</span>
+              <span className="text-lg text-gray-500">{day.minTemp}{unitSymbol}</span>
             </div>
           </div>
         ))}
