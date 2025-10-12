@@ -13,16 +13,18 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [userLocation, setUserLocation] = useState(null);
-  const [unit, setUnit] = useState('celsius'); // 'celsius' or 'fahrenheit'
+  const [unit, setUnit] = useState('celsius');
+  const [theme, setTheme] = useState('light'); // 'light' or 'dark'
 
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
   const CURRENT_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
   const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
-  // Load favorites and unit preference from localStorage on component mount
+  // Load preferences from localStorage on component mount
   useEffect(() => {
     const savedFavorites = localStorage.getItem('weatherFavorites');
     const savedUnit = localStorage.getItem('weatherUnit');
+    const savedTheme = localStorage.getItem('weatherTheme');
     
     if (savedFavorites) {
       setFavorites(JSON.parse(savedFavorites));
@@ -30,13 +32,22 @@ function App() {
     if (savedUnit) {
       setUnit(savedUnit);
     }
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
   }, []);
 
-  // Save favorites and unit preference to localStorage whenever they change
+  // Save preferences to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('weatherFavorites', JSON.stringify(favorites));
     localStorage.setItem('weatherUnit', unit);
-  }, [favorites, unit]);
+    localStorage.setItem('weatherTheme', theme);
+  }, [favorites, unit, theme]);
+
+  // Apply theme to document root
+  useEffect(() => {
+    document.documentElement.className = theme;
+  }, [theme]);
 
   // Get user's current location on component mount
   useEffect(() => {
@@ -93,12 +104,8 @@ function App() {
     setUnit(prev => prev === 'celsius' ? 'fahrenheit' : 'celsius');
   };
 
-  // Convert temperature based on current unit
-  const convertTemp = (tempCelsius) => {
-    if (unit === 'fahrenheit') {
-      return Math.round((tempCelsius * 9/5) + 32);
-    }
-    return tempCelsius;
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
   const fetchWeatherByCoords = async (lat, lon) => {
@@ -225,41 +232,66 @@ function App() {
     }
   };
 
+  // Theme-based styles
+  const backgroundGradient = theme === 'dark' 
+    ? 'from-gray-900 via-gray-800 to-gray-900' 
+    : 'from-blue-50 via-sky-100 to-blue-200';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-blue-200 py-8">
+    <div className={`min-h-screen bg-gradient-to-br ${backgroundGradient} py-8 transition-colors duration-300`}>
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header with Unit Toggle */}
+        {/* Header with Controls */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div className="text-center sm:text-left mb-4 sm:mb-0">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            <h1 className={`text-4xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
               🌤️ Weather Dashboard
             </h1>
-            <p className="text-gray-600">Get accurate weather forecasts for any city</p>
+            <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
+              Get accurate weather forecasts for any city
+            </p>
           </div>
           
-          {/* Unit Toggle Button */}
-          <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-xl p-2 shadow-sm border border-white/20">
-            <span className="text-sm font-medium text-gray-600 px-2">Units:</span>
-            <button
-              onClick={toggleUnit}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
-                unit === 'celsius'
-                  ? 'bg-blue-500 text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              °C
-            </button>
-            <button
-              onClick={toggleUnit}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
-                unit === 'fahrenheit'
-                  ? 'bg-blue-500 text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              °F
-            </button>
+          {/* Controls Container */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Theme Toggle */}
+            <div className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-2 shadow-sm border border-white/20 dark:border-gray-700/50">
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  theme === 'light' 
+                    ? 'bg-yellow-400 text-yellow-900 shadow-md' 
+                    : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                }`}
+                title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+              >
+                {theme === 'light' ? '☀️' : '🌙'}
+              </button>
+            </div>
+            
+            {/* Unit Toggle */}
+            <div className="flex items-center space-x-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-2 shadow-sm border border-white/20 dark:border-gray-700/50">
+              <span className="text-sm font-medium px-2 dark:text-gray-300">Units:</span>
+              <button
+                onClick={toggleUnit}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                  unit === 'celsius'
+                    ? 'bg-blue-500 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                °C
+              </button>
+              <button
+                onClick={toggleUnit}
+                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                  unit === 'fahrenheit'
+                    ? 'bg-blue-500 text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                °F
+              </button>
+            </div>
           </div>
         </div>
         
@@ -267,17 +299,20 @@ function App() {
           onSearch={handleSearch} 
           onUseMyLocation={handleUseMyLocation}
           userLocation={userLocation}
+          theme={theme}
         />
         
         {loading && (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
-            <span className="ml-4 text-gray-600 text-lg font-medium">Loading weather data...</span>
+            <span className={`ml-4 text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+              Loading weather data...
+            </span>
           </div>
         )}
         
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 shadow-sm">
+          <div className={`bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-xl mb-6 shadow-sm`}>
             <div className="flex items-center">
               <span className="text-lg mr-2">⚠️</span>
               <div>
@@ -295,7 +330,7 @@ function App() {
               disabled={favorites.includes(weather.city)}
               className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm ${
                 favorites.includes(weather.city)
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed border border-gray-200 dark:border-gray-600'
                   : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-md hover:shadow-lg'
               }`}
             >
@@ -308,11 +343,12 @@ function App() {
           favorites={favorites}
           onSelectFavorite={handleSelectFavorite}
           onRemoveFavorite={handleRemoveFavorite}
+          theme={theme}
         />
         
-        <CurrentWeather weather={weather} unit={unit} />
-        <Forecast forecast={forecast} unit={unit} />
-        <WeatherDetails weather={weather} unit={unit} />
+        <CurrentWeather weather={weather} unit={unit} theme={theme} />
+        <Forecast forecast={forecast} unit={unit} theme={theme} />
+        <WeatherDetails weather={weather} unit={unit} theme={theme} />
       </div>
     </div>
   );
